@@ -14,7 +14,7 @@ namespace Mundialito.Domain.Common.Results
             _value = value;
         }
 
-        public T value => IsSuccess
+        public T Value => IsSuccess
             ? _value!
             : throw new InvalidOperationException("No se puede leer el valor de un resultado.");
 

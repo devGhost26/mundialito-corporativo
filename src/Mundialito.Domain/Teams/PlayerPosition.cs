@@ -1,0 +1,14 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Mundialito.Domain.Teams
+{
+    public enum PlayerPosition
+    {
+        Goalkeeper = 1,
+        Defender = 2,
+        Midfielder = 3,
+        Forward = 4
+    }
+}

@@ -7,6 +7,6 @@ namespace Mundialito.Domain.Common
     public interface IDomainEvent
     {
         Guid EventId { get; }
-        DateTime OcurredOnUtc { get; }
+        DateTime OccurredOnUtc { get; }
     }
 }
