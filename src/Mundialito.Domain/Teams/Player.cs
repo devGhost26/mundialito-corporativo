@@ -43,6 +43,9 @@ namespace Mundialito.Domain.Teams
             if (!Enum.IsDefined(position))
                 return PlayerErrors.InvalidPosition;
 
+            if (firstName.Trim().Length > NameMaxLength || lastName.Trim().Length > NameMaxLength)
+                return PlayerErrors.NameTooLong;
+
             return new Player(Guid.CreateVersion7(), teamId, firstName.Trim(), lastName.Trim(), number, position);
         }
     }

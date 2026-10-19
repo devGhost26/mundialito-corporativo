@@ -21,5 +21,7 @@ namespace Mundialito.Domain.Teams
 
         public static Error NotFound(Guid playerId) =>
             Error.NotFound("Player.NotFound", $"No existe el jugador con Id {playerId}.");
+        public static readonly Error NameTooLong =
+            Error.Validation("Player.NameTooLong", $"El nombre y el apellido no pueden pasar de {Player.NameMaxLength} caracteres.");
     }
 }
