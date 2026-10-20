@@ -5,6 +5,7 @@ using Mundialito.Application.Abstractions;
 using Mundialito.Domain.Matches;
 using Mundialito.Domain.Teams;
 using Mundialito.Infrastructure.Events;
+using Mundialito.Infrastructure.Idempotency;
 using Mundialito.Infrastructure.Persistence;
 using Mundialito.Infrastructure.Repositories;
 
@@ -23,7 +24,7 @@ namespace Mundialito.Infrastructure
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<IMatchRepository, MatchRepository>();
             services.AddScoped<DomainEventDispatcher>();
-
+            services.AddSingleton<IIdempotencyStore, IdempotencyStore>();
             return services;
         }
 

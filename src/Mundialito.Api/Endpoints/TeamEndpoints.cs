@@ -1,6 +1,7 @@
 ﻿using Mediator;
 using Mundialito.Api.Contracts.Teams;
 using Mundialito.Api.Extensions;
+using Mundialito.Api.Idempotency;
 using Mundialito.Application.Teams.AddPlayer;
 using Mundialito.Application.Teams.CreateTeam;
 using Mundialito.Application.Teams.DeleteTeam;
@@ -14,12 +15,11 @@ namespace Mundialito.Api.Endpoints
         public static IEndpointRouteBuilder MapTeamEndpoints(this IEndpointRouteBuilder app)
         {
             var group = app.MapGroup("/api/teams").WithTags("Teams");
-
-            group.MapPost("/", CreateTeam);
+            group.MapPost("/", CreateTeam).WithIdempotency();
             group.MapPut("/{teamId:guid}", UpdateTeam);
             group.MapPatch("/{teamId:guid}", PatchTeam);
             group.MapDelete("/{teamId:guid}", DeleteTeam);
-            group.MapPost("/{teamId:guid}/players", AddPlayer);
+            group.MapPost("/{teamId:guid}/players", AddPlayer).WithIdempotency();
 
             return app;
         }
