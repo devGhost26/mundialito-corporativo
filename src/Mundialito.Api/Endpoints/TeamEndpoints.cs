@@ -7,7 +7,9 @@ using Mundialito.Application.Teams.CreateTeam;
 using Mundialito.Application.Teams.DeleteTeam;
 using Mundialito.Application.Teams.PatchTeam;
 using Mundialito.Application.Teams.UpdateTeam;
-
+using Mundialito.Application.Teams.GetTeamById;
+using Mundialito.Application.Teams.ListPlayers;
+using Mundialito.Application.Teams.ListTeams;
 namespace Mundialito.Api.Endpoints
 {
     public static class TeamEndpoints
@@ -15,6 +17,9 @@ namespace Mundialito.Api.Endpoints
         public static IEndpointRouteBuilder MapTeamEndpoints(this IEndpointRouteBuilder app)
         {
             var group = app.MapGroup("/api/teams").WithTags("Teams");
+            group.MapGet("/", ListTeams);
+            group.MapGet("/{teamId:guid}", GetTeamById);
+            group.MapGet("/{teamId:guid}/players", ListPlayers);
             group.MapPost("/", CreateTeam).WithIdempotency();
             group.MapPut("/{teamId:guid}", UpdateTeam);
             group.MapPatch("/{teamId:guid}", PatchTeam);
@@ -24,6 +29,27 @@ namespace Mundialito.Api.Endpoints
             return app;
         }
 
+        private static async Task<IResult> ListTeams(
+            [AsParameters] ListTeamsRequest request, ISender sender, CancellationToken cancellationToken)
+        {
+            var query = new ListTeamsQuery(
+                request.PageNumber, request.PageSize, request.SortBy, request.SortDirection, request.Name, request.City);
+
+            return (await sender.Send(query, cancellationToken)).ToOk();
+        }
+
+        private static async Task<IResult> GetTeamById(Guid teamId, ISender sender, CancellationToken cancellationToken) =>
+            (await sender.Send(new GetTeamByIdQuery(teamId), cancellationToken)).ToOk();
+
+        private static async Task<IResult> ListPlayers(
+            Guid teamId, [AsParameters] ListPlayersRequest request, ISender sender, CancellationToken cancellationToken)
+        {
+            var query = new ListPlayersQuery(
+                teamId, request.PageNumber, request.PageSize, request.SortBy, request.SortDirection,
+                request.Name, request.Position);
+
+            return (await sender.Send(query, cancellationToken)).ToOk();
+        }
         private static async Task<IResult> CreateTeam(CreateTeamRequest request, ISender sender, CancellationToken cancellationToken)
         {
             var result = await sender.Send(new CreateTeamCommand(request.Name, request.City), cancellationToken);

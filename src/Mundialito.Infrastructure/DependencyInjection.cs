@@ -2,11 +2,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Mundialito.Application.Abstractions;
+using Mundialito.Application.Teams;
 using Mundialito.Domain.Matches;
 using Mundialito.Domain.Teams;
 using Mundialito.Infrastructure.Events;
 using Mundialito.Infrastructure.Idempotency;
 using Mundialito.Infrastructure.Persistence;
+using Mundialito.Infrastructure.Queries;
 using Mundialito.Infrastructure.Repositories;
 
 namespace Mundialito.Infrastructure
@@ -25,6 +27,8 @@ namespace Mundialito.Infrastructure
             services.AddScoped<IMatchRepository, MatchRepository>();
             services.AddScoped<DomainEventDispatcher>();
             services.AddSingleton<IIdempotencyStore, IdempotencyStore>();
+            services.AddSingleton(new SqlConnectionFactory(connectionString));
+            services.AddScoped<ITeamQueries, TeamQueries>();
             return services;
         }
 
