@@ -15,7 +15,7 @@ namespace Mundialito.Domain.Matches
             Error.Validation("Match.VenueTooLong", $"El estadio no puede pasar de {Match.VenueMaxLength} caracteres.");
 
         public static readonly Error AlreadyPlayed =
-            Error.Confilct("Match.AlreadyPlayed", "El partido ya tiene un resultado registrado.");
+            Error.Conflict("Match.AlreadyPlayed", "El partido ya tiene un resultado registrado.");
 
         public static readonly Error NegativeScore =
             Error.Validation("Match.NegativeScore", "El marcador no puede ser negativo.");

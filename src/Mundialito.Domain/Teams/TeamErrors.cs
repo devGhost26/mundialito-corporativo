@@ -20,9 +20,9 @@ namespace Mundialito.Domain.Teams
             Error.NotFound("Team.NotFound", $"No existe el equipo con Id {teamId}.");
 
         public static Error NameAlreadyExists(string name) =>
-            Error.Confilct("Team.NameAlreadyExists", $"Ya existe un equipo llamado '{name}'.");
+            Error.Conflict("Team.NameAlreadyExists", $"Ya existe un equipo llamado '{name}'.");
 
         public static Error NumberTaken(int number) =>
-            Error.Confilct("Team.NumberTaken", $"El dorsal {number} ya está ocupado en este equipo.");
+            Error.Conflict("Team.NumberTaken", $"El dorsal {number} ya está ocupado en este equipo.");
     }
 }
