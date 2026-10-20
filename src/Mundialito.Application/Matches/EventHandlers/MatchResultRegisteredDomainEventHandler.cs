@@ -2,7 +2,7 @@
 using Mundialito.Application.Abstractions;
 using Mundialito.Domain.Matches;
 
-namespace Mundialito.Application.Teams.EventHandlers
+namespace Mundialito.Application.Matches.EventHandlers
 {
     internal sealed class MatchResultRegisteredDomainEventHandler(ILogger<MatchResultRegisteredDomainEventHandler> logger)
         : IDomainEventHandler<MatchResultRegisteredDomainEvent>
