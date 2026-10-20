@@ -28,7 +28,8 @@ namespace Mundialito.Infrastructure.Repositories
                 .Where(p => ids.Contains(p.Id))
                 .ToListAsync(cancellationToken);
         }
-
+        public Task<bool> ExistsAsync(Guid id, CancellationToken cancellationToken = default) =>
+            dbContext.Teams.AnyAsync(t => t.Id == id, cancellationToken);
         public void Add(Team team) => dbContext.Teams.Add(team);
 
         public void Remove(Team team) => dbContext.Teams.Remove(team);

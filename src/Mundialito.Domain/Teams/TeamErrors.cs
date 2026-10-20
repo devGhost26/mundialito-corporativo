@@ -24,5 +24,7 @@ namespace Mundialito.Domain.Teams
 
         public static Error NumberTaken(int number) =>
             Error.Conflict("Team.NumberTaken", $"El dorsal {number} ya está ocupado en este equipo.");
+        public static readonly Error HasMatches =
+            Error.Conflict("Team.HasMatches", "No se puede eliminar un equipo que tiene partidos.");
     }
 }
