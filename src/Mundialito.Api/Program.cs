@@ -21,4 +21,5 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.MapTeamEndpoints();
 app.MapMatchEndpoints();
+app.MapStandingEndpoints();
 app.Run();
