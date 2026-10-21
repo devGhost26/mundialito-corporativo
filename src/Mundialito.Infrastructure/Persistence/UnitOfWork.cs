@@ -7,6 +7,7 @@ using Mundialito.Domain.Common.Results;
 using Mundialito.Infrastructure.Events;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Mundialito.Infrastructure.Persistence
@@ -25,6 +26,8 @@ namespace Mundialito.Infrastructure.Persistence
                 .ToList();
 
             var domainEvents = entities.SelectMany(entity => entity.DomainEvents).ToList();
+            dbContext.DomainEvents.AddRange(
+                domainEvents.Select(domainEvent => DomainEventRecord.From(domainEvent, Activity.Current)));
 
             await using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
 

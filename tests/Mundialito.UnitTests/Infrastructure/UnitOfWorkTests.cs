@@ -84,7 +84,22 @@ namespace Mundialito.UnitTests.Infrastructure
             Assert.Equal(team.Id, published.TeamId);
             Assert.Empty(team.DomainEvents);
         }
+        [Fact]
+        public async Task Los_eventos_quedan_registrados_en_la_base_junto_con_el_cambio()
+        {
+            using var scope = _services.CreateScope();
+            var team = Team.Create("Halcones", null).Value;
+            var eventId = team.DomainEvents.Single().EventId;
+            scope.ServiceProvider.GetRequiredService<ITeamRepository>().Add(team);
 
+            await scope.ServiceProvider.GetRequiredService<IUnitOfWork>().CommitAsync();
+
+            using var readScope = _services.CreateScope();
+            var stored = readScope.ServiceProvider.GetRequiredService<AppDbContext>().DomainEvents.Single();
+            Assert.Equal(eventId, stored.Id);
+            Assert.Equal(nameof(TeamCreatedDomainEvent), stored.Type);
+            Assert.Contains("Halcones", stored.Payload);
+        }
         [Fact]
         public async Task Si_el_commit_falla_no_se_guarda_nada_ni_se_publican_eventos()
         {

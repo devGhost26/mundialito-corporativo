@@ -1,4 +1,5 @@
-﻿using Serilog.Context;
+﻿using Mundialito.Application.Abstractions;
+using Serilog.Context;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
@@ -16,7 +17,8 @@ namespace Mundialito.Api.Observability
             var traceId = Activity.Current?.TraceId.ToString() ?? context.TraceIdentifier;
 
             context.Items[CorrelationIdItem] = correlationId;
-
+            Activity.Current?.SetTag(CorrelationContext.BaggageKey, correlationId);
+            Activity.Current?.AddBaggage(CorrelationContext.BaggageKey, correlationId);
             context.Response.OnStarting(() =>
             {
                 context.Response.Headers[CorrelationIdHeader] = correlationId;

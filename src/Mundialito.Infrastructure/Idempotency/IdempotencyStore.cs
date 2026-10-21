@@ -1,33 +1,33 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Dapper;                                       
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Mundialito.Application.Abstractions;
 using Mundialito.Infrastructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using Mundialito.Infrastructure.Queries;           
 
 namespace Mundialito.Infrastructure.Idempotency
 {
-    internal sealed class IdempotencyStore(IServiceScopeFactory scopeFactory) : IIdempotencyStore
+    internal sealed class IdempotencyStore(IServiceScopeFactory scopeFactory, SqlConnectionFactory connectionFactory)
+        : IIdempotencyStore
     {
+        private const string GetSql = """
+            SELECT
+                RequestHash,
+                CAST(CASE WHEN CompletedAtUtc IS NULL THEN 0 ELSE 1 END AS bit) AS IsCompleted,
+                StatusCode,
+                ContentType,
+                ResponseBody AS Body,
+                Location
+            FROM IdempotencyRecords
+            WHERE [Key] = @Key;
+            """;
+
         public async Task<IdempotentResponse?> GetAsync(string key, CancellationToken cancellationToken = default)
         {
-            using var scope = scopeFactory.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+            await using var connection = await connectionFactory.OpenAsync(cancellationToken);
 
-            var record = await dbContext.IdempotencyRecords
-                .AsNoTracking()
-                .FirstOrDefaultAsync(r => r.Key == key, cancellationToken);
-
-            return record is null
-                ? null
-                : new IdempotentResponse(
-                    record.RequestHash,
-                    record.CompletedAtUtc is not null,
-                    record.StatusCode,
-                    record.ContentType,
-                    record.ResponseBody,
-                    record.Location);
+            return await connection.QuerySingleOrDefaultAsync<IdempotentResponse>(
+                new CommandDefinition(GetSql, new { Key = key }, cancellationToken: cancellationToken));
         }
 
         public async Task<bool> TryReserveAsync(string key, string requestHash, CancellationToken cancellationToken = default)

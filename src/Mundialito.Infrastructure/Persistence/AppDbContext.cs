@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Mundialito.Domain.Matches;
 using Mundialito.Domain.Teams;
+using Mundialito.Infrastructure.Events;
 using Mundialito.Infrastructure.Idempotency;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace Mundialito.Infrastructure.Persistence
         public DbSet<Match> Matches => Set<Match>();
         public DbSet<Goal> Goals => Set<Goal>();
         public DbSet<IdempotencyRecord> IdempotencyRecords => Set<IdempotencyRecord>();
+        public DbSet<DomainEventRecord> DomainEvents => Set<DomainEventRecord>();
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
