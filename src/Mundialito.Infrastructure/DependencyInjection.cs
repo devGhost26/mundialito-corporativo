@@ -35,6 +35,7 @@ namespace Mundialito.Infrastructure
             services.AddScoped<IMatchQueries, MatchQueries>();
             services.AddScoped<IStandingsQueries, StandingsQueries>();
             services.AddScoped<DatabaseInitializer>();
+            services.AddHealthChecks().AddDbContextCheck<AppDbContext>("database");
             return services;
         }
         public static async Task InitializeDatabaseAsync(this IServiceProvider services, CancellationToken cancellationToken = default)
