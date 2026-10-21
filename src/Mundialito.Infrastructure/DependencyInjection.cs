@@ -10,6 +10,7 @@ using Mundialito.Domain.Teams;
 using Mundialito.Infrastructure.Events;
 using Mundialito.Infrastructure.Idempotency;
 using Mundialito.Infrastructure.Persistence;
+using Mundialito.Infrastructure.Persistence.Seed;
 using Mundialito.Infrastructure.Queries;
 using Mundialito.Infrastructure.Repositories;
 
@@ -33,7 +34,15 @@ namespace Mundialito.Infrastructure
             services.AddScoped<ITeamQueries, TeamQueries>();
             services.AddScoped<IMatchQueries, MatchQueries>();
             services.AddScoped<IStandingsQueries, StandingsQueries>();
+            services.AddScoped<DatabaseInitializer>();
             return services;
+        }
+        public static async Task InitializeDatabaseAsync(this IServiceProvider services, CancellationToken cancellationToken = default)
+        {
+            await using var scope = services.CreateAsyncScope();
+            var initializer = scope.ServiceProvider.GetRequiredService<DatabaseInitializer>();
+
+            await initializer.InitializeAsync(cancellationToken);
         }
 
 
