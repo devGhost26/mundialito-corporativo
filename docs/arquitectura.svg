@@ -1,0 +1,184 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 830" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#334e68"/>
+    </marker>
+    <marker id="aw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#c2410c"/>
+    </marker>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#15803d"/>
+    </marker>
+    <marker id="ai" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#7c3aed"/>
+    </marker>
+    <marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+    <style>
+      .box { fill: #fff; stroke: #334e68; stroke-width: 1.4; rx: 6; }
+      .t { font-size: 13px; font-weight: 600; fill: #102a43; text-anchor: middle; }
+      .s { font-size: 11px; fill: #334e68; text-anchor: middle; }
+      .band-t { font-size: 12px; font-weight: 700; fill: #243b53; }
+      .lbl { font-size: 11px; fill: #334e68; }
+      .flow { stroke: #334e68; stroke-width: 1.5; fill: none; marker-end: url(#a); }
+      .write { stroke: #c2410c; stroke-width: 1.8; fill: none; marker-end: url(#aw); }
+      .read { stroke: #15803d; stroke-width: 1.8; fill: none; marker-end: url(#ar); }
+      .idem { stroke: #7c3aed; stroke-width: 1.8; fill: none; marker-end: url(#ai); }
+      .obs { stroke: #64748b; stroke-width: 1.5; fill: none; stroke-dasharray: 6 4; marker-end: url(#ao); }
+    </style>
+  </defs>
+
+  <rect width="1200" height="830" fill="#ffffff"/>
+
+  <!-- Navegador -->
+  <rect class="box" x="40" y="25" width="170" height="50" style="fill:#f0f4f8"/>
+  <text class="t" x="125" y="47">Navegador</text>
+  <text class="s" x="125" y="63">usuario del torneo</text>
+
+  <!-- docker-compose -->
+  <rect x="20" y="105" width="1160" height="610" rx="10" fill="#f8fafc" stroke="#486581" stroke-width="1.5" stroke-dasharray="8 5"/>
+  <text class="band-t" x="36" y="126">docker-compose up</text>
+
+  <!-- frontend -->
+  <rect class="box" x="40" y="150" width="210" height="160" style="fill:#eef6ff"/>
+  <text class="t" x="145" y="174">frontend</text>
+  <text class="s" x="145" y="190">Next.js · :3000</text>
+  <text class="s" x="145" y="216">vistas y formularios</text>
+  <text class="s" x="145" y="233">filtros y paginación</text>
+  <text class="s" x="145" y="250">errores con correlationId</text>
+  <text class="s" x="145" y="267">Idempotency-Key en cada POST</text>
+  <text class="s" x="145" y="290">lib/api → única capa que</text>
+  <text class="s" x="145" y="304">habla con la API</text>
+
+  <!-- API container -->
+  <rect x="280" y="140" width="610" height="555" rx="8" fill="#ffffff" stroke="#243b53" stroke-width="1.6"/>
+  <text class="band-t" x="294" y="160">api · ASP.NET Core · :8080 · Clean Architecture</text>
+
+  <!-- Capa Api -->
+  <rect x="290" y="170" width="590" height="110" rx="6" fill="#e0f2fe"/>
+  <text class="band-t" x="300" y="188">Api · solo orquesta</text>
+  <rect class="box" x="300" y="200" width="140" height="68"/>
+  <text class="t" x="370" y="220">Middleware</text>
+  <text class="s" x="370" y="236">CorrelationId + TraceId</text>
+  <text class="s" x="370" y="250">duración del request</text>
+  <text class="s" x="370" y="263">errores → ProblemDetails</text>
+  <rect class="box" x="455" y="200" width="140" height="68"/>
+  <text class="t" x="525" y="222">IdempotencyFilter</text>
+  <text class="s" x="525" y="240">Idempotency-Key</text>
+  <text class="s" x="525" y="255">repite la respuesta</text>
+  <rect class="box" x="610" y="200" width="265" height="68"/>
+  <text class="t" x="742" y="222">Endpoints Minimal API</text>
+  <text class="s" x="742" y="240">GET · POST · PUT · PATCH · DELETE</text>
+  <text class="s" x="742" y="255">Result → 200 · 201 · 204 · 400 · 404 · 409</text>
+
+  <!-- Capa Application -->
+  <rect x="290" y="292" width="590" height="112" rx="6" fill="#ecfdf5"/>
+  <text class="band-t" x="300" y="310">Application · CQRS con Mediator + LoggingBehavior</text>
+  <rect class="box" x="300" y="322" width="140" height="68"/>
+  <text class="t" x="370" y="346">Commands</text>
+  <text class="s" x="370" y="362">escritura</text>
+  <text class="s" x="370" y="377">EF Core + Unit of Work</text>
+  <rect class="box" x="455" y="322" width="140" height="68"/>
+  <text class="t" x="525" y="346">Handlers de eventos</text>
+  <text class="s" x="525" y="364">escriben el log</text>
+  <rect class="box" x="765" y="322" width="110" height="68"/>
+  <text class="t" x="820" y="346">Queries</text>
+  <text class="s" x="820" y="362">lectura</text>
+  <text class="s" x="820" y="377">solo Dapper</text>
+
+  <!-- Capa Domain -->
+  <rect x="290" y="416" width="590" height="104" rx="6" fill="#fff7ed"/>
+  <text class="band-t" x="300" y="434">Domain · sin dependencias</text>
+  <rect class="box" x="610" y="444" width="140" height="66"/>
+  <text class="t" x="680" y="464">Team · Match</text>
+  <text class="s" x="680" y="480">reglas del torneo</text>
+  <text class="s" x="680" y="494">Result · eventos</text>
+
+  <!-- Capa Infrastructure -->
+  <rect x="290" y="532" width="590" height="152" rx="6" fill="#f5f3ff"/>
+  <text class="band-t" x="300" y="550">Infrastructure · implementa los contratos</text>
+  <rect class="box" x="300" y="562" width="140" height="76"/>
+  <text class="t" x="370" y="584">Unit of Work</text>
+  <text class="s" x="370" y="600">transacción · commit</text>
+  <text class="s" x="370" y="614">guarda los eventos</text>
+  <text class="s" x="370" y="628">repositorios EF Core</text>
+  <rect class="box" x="455" y="562" width="140" height="76"/>
+  <text class="t" x="525" y="588">Despachador</text>
+  <text class="s" x="525" y="604">publica los eventos</text>
+  <text class="s" x="525" y="618">después del commit</text>
+  <rect class="box" x="610" y="562" width="140" height="76"/>
+  <text class="t" x="680" y="588">IdempotencyStore</text>
+  <text class="s" x="680" y="604">reserva la llave</text>
+  <text class="s" x="680" y="618">guarda la respuesta</text>
+  <rect class="box" x="765" y="562" width="110" height="76"/>
+  <text class="t" x="820" y="588">Dapper</text>
+  <text class="s" x="820" y="604">SQL a mano</text>
+  <text class="s" x="820" y="618">OFFSET / FETCH</text>
+  <text class="lbl" x="300" y="672">Serilog · OpenTelemetry (ASP.NET Core + SqlClient)</text>
+
+  <!-- SQL Server -->
+  <rect x="915" y="140" width="245" height="370" rx="8" fill="#fffbeb" stroke="#b45309" stroke-width="1.6"/>
+  <text class="band-t" x="929" y="160">db · SQL Server · :1434</text>
+  <rect class="box" x="935" y="178" width="205" height="80" style="stroke:#b45309"/>
+  <text class="t" x="1037" y="202">Datos del torneo</text>
+  <text class="s" x="1037" y="220">Teams · Players</text>
+  <text class="s" x="1037" y="236">Matches · Goals</text>
+  <text class="s" x="1037" y="250">índices para los filtros</text>
+  <rect class="box" x="935" y="282" width="205" height="80" style="stroke:#b45309"/>
+  <text class="t" x="1037" y="306">DomainEvents</text>
+  <text class="s" x="1037" y="324">equipo creado · resultado</text>
+  <text class="s" x="1037" y="340">con TraceId y CorrelationId</text>
+  <rect class="box" x="935" y="398" width="205" height="80" style="stroke:#b45309"/>
+  <text class="t" x="1037" y="422">IdempotencyRecords</text>
+  <text class="s" x="1037" y="440">llave · huella del request</text>
+  <text class="s" x="1037" y="456">respuesta guardada</text>
+
+  <!-- Jaeger -->
+  <rect class="box" x="915" y="560" width="245" height="78" style="fill:#f1f5f9"/>
+  <text class="t" x="1037" y="584">jaeger · :16686</text>
+  <text class="s" x="1037" y="602">trazas OTLP</text>
+  <text class="s" x="1037" y="618">spans HTTP y SQL por request</text>
+
+  <!-- Consola -->
+  <rect class="box" x="300" y="740" width="250" height="60" style="fill:#f1f5f9"/>
+  <text class="t" x="425" y="764">Consola · Serilog</text>
+  <text class="s" x="425" y="782">logs estructurados con CorrelationId y TraceId</text>
+
+  <!-- Flujo del request -->
+  <path class="flow" d="M125 75 L125 148"/>
+  <text class="lbl" x="132" y="100">HTML y JS</text>
+  <path class="flow" d="M210 50 L370 50 L370 198"/>
+  <text class="lbl" x="226" y="44">fetch + CORS + X-Correlation-Id</text>
+  <path class="flow" d="M440 234 L453 234"/>
+  <path class="flow" d="M595 234 L608 234"/>
+  <path class="flow" d="M650 268 L420 320"/>
+  <text class="lbl" x="455" y="300">Mediator</text>
+  <path class="flow" d="M820 268 L820 320"/>
+  <path class="flow" d="M420 390 L608 460"/>
+  <text class="lbl" x="470" y="438">usa las reglas</text>
+  <path class="flow" d="M370 390 L370 560"/>
+  <path class="flow" d="M440 600 L453 600"/>
+  <path class="flow" d="M525 562 L525 392"/>
+  <path class="idem" d="M525 268 L525 284 L602 284 L602 548 L680 548 L680 560"/>
+
+  <!-- Persistencia -->
+  <path class="write" d="M370 638 L370 652 L902 652 L902 218 L933 218"/>
+  <path class="write" d="M902 322 L933 322"/>
+  <text class="lbl" x="560" y="648" style="fill:#c2410c">escribe con EF Core en una transacción</text>
+  <path class="read" d="M875 585 L895 585 L895 238 L933 238"/>
+  <path class="idem" d="M750 600 L760 600 L760 645 L908 645 L908 438 L933 438"/>
+
+  <!-- Observabilidad -->
+  <path class="obs" d="M425 695 L425 738"/>
+  <path class="obs" d="M890 670 L1037 670 L1037 640"/>
+  <text class="lbl" x="930" y="664">OTLP</text>
+
+  <!-- Leyenda -->
+  <text class="band-t" x="600" y="752">Leyenda</text>
+  <path class="flow" d="M600 770 L640 770"/><text class="lbl" x="648" y="774">flujo del request</text>
+  <path class="write" d="M770 770 L810 770"/><text class="lbl" x="818" y="774">escritura (EF Core + Unit of Work)</text>
+  <path class="read" d="M600 795 L640 795"/><text class="lbl" x="648" y="799">lectura (Dapper)</text>
+  <path class="idem" d="M770 795 L810 795"/><text class="lbl" x="818" y="799">idempotencia</text>
+  <path class="obs" d="M990 795 L1030 795"/><text class="lbl" x="1038" y="799">logs y trazas</text>
+</svg>
