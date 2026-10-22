@@ -41,3 +41,6 @@ app.MapMatchEndpoints();
 app.MapStandingEndpoints();
 
 app.Run();
+
+// Visible para WebApplicationFactory en los tests de integración
+public partial class Program;

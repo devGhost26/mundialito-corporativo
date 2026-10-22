@@ -56,7 +56,8 @@ src/
   Mundialito.Infrastructure/  EF Core, Dapper, Unit of Work, idempotencia, seed
   Mundialito.Api/             endpoints, middleware, observabilidad, composition root
 tests/
-  Mundialito.UnitTests/       pruebas del dominio, Result, idempotencia y Unit of Work
+  Mundialito.UnitTests/         pruebas del dominio, Result, idempotencia y Unit of Work
+  Mundialito.IntegrationTests/  API completa contra SQL Server con Testcontainers
 frontend/                     Next.js
 postman/                      colección y entorno
 docs/                         diagramas
@@ -186,7 +187,7 @@ Al arrancar, si no hay equipos, se cargan 4 equipos (departamentos de una empres
 - **Logs estructurados** con Serilog detrás de `ILogger`: Application y Domain no dependen de Serilog. No se loggean bodies ni el contenido de los commands.
 - **Cada request** lleva un `CorrelationId` (del header `X-Correlation-Id` si es válido, o generado) y el `TraceId` de OpenTelemetry. Los dos van en todos sus logs y en los headers de respuesta.
 - **Duración** de cada request (middleware) y de cada command o query (pipeline behavior de Mediator).
-- **Niveles:** `Debug` para el detalle interno, `Information` para operaciones exitosas, `Warning` para errores de negocio y respuestas 4xx, `Error` para fallos no controlados y respuestas 5xx.
+- **Niveles:** `Debug` para el detalle interno, `Information` para operaciones exitosas, `Warning` para errores de negocio y respuestas 4xx, `Error` para fallos no controlados y respuestas 5xx. Los registros internos de EF Core sobre comandos fallidos están silenciados: un registro duplicado queda como `Warning` en el Unit of Work (es un 409 esperado) y los errores reales llegan como `Error` al manejador global.
 - **Errores no controlados:** 500 con un mensaje genérico y el `correlationId`; el detalle queda solo en el log.
 - **Trazas:** OpenTelemetry exporta por OTLP a Jaeger los spans de cada request y de cada consulta SQL, tanto de EF Core como de Dapper. Las trazas se pueden buscar por la etiqueta `correlation.id`.
 - **Eventos de dominio** (equipo creado, resultado registrado): se loggean y se guardan en `DomainEvents` con el `TraceId` y el `CorrelationId` del request que los produjo.
@@ -207,7 +208,9 @@ Ejemplo de logs de un request:
 dotnet test
 ```
 
-39 pruebas unitarias:
+39 pruebas unitarias y 7 de integración. Las de integración necesitan Docker abierto.
+
+### Unitarias
 
 | Área | Qué cubren |
 |---|---|
@@ -219,6 +222,25 @@ dotnet test
 | Unit of Work | Nada se guarda antes del commit, varios repositorios en un commit, eventos guardados y publicados después del commit, atomicidad si el commit falla |
 
 Las del Unit of Work usan SQLite en memoria porque, a diferencia del proveedor InMemory de EF, soporta transacciones reales.
+
+### Integración
+
+Levantan la API completa con `WebApplicationFactory` contra un SQL Server real que crea **Testcontainers** en Docker para cada corrida. La API migra y carga el seed al arrancar, igual que con `docker-compose`.
+
+| Prueba | Qué demuestra |
+|---|---|
+| La tabla del SQL coincide con el calculador del dominio | El SQL de Dapper y `StandingsCalculator` dan la misma tabla sobre los mismos datos |
+| Los goleadores coinciden con los goles guardados | La consulta de goleadores cuenta bien |
+| La paginación sale de la base | `OFFSET / FETCH`, totales y puesto oficial en la página 2 |
+| Repetir un POST con la misma llave | Idempotencia de punta a punta, contando en la base |
+| Mismo nombre al mismo tiempo | 5 peticiones simultáneas: un 201, el resto 409 por el índice único, un solo equipo guardado |
+| Registrar un resultado | Actualiza la tabla y guarda el evento con el `CorrelationId` y el `TraceId` del request |
+| Error de negocio | ProblemDetails con `errorCode` y `correlationId` |
+
+```bash
+dotnet test tests/Mundialito.UnitTests          # solo unitarias, sin Docker
+dotnet test tests/Mundialito.IntegrationTests   # solo integración
+```
 
 ---
 
@@ -235,7 +257,6 @@ La API aplica las migraciones al arrancar. Para el frontend, crear `frontend/.en
 
 ## Limitaciones y mejoras futuras
 
-- **Tests de integración** con Testcontainers contra SQL Server: comparar la tabla del SQL con el calculador del dominio sobre los mismos datos, y probar la traducción a 409 de los índices únicos.
 - **Patrón Outbox completo:** los eventos ya se guardan en la misma transacción; faltaría un proceso que los publique desde la tabla con reintentos.
 - **Llaves de idempotencia:** no expiran; se borrarían las de más de 24 horas con un proceso programado. Si el proceso se cae entre el commit del caso de uso y el guardado de la respuesta, la llave queda en curso.
 - **Migraciones al arrancar:** adecuado para una instancia; con varias réplicas se correrían en el pipeline de despliegue.
