@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Sidebar } from "@/components/Sidebar";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -11,13 +11,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es">
       <body>
-        <nav>
-          <Link href="/standings">Tabla</Link>
-          <Link href="/scorers">Goleadores</Link>
-          <Link href="/matches">Partidos</Link>
-          <Link href="/teams">Equipos</Link>
-        </nav>
-        <main>{children}</main>
+        <div className="app">
+          <Sidebar />
+          <main className="main">{children}</main>
+        </div>
       </body>
     </html>
   );

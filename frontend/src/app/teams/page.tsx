@@ -3,8 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ErrorBox } from "@/components/ErrorBox";
+import { PageHeader } from "@/components/PageHeader";
 import { Pagination } from "@/components/Pagination";
 import { SortControls } from "@/components/SortControls";
+import { TeamAvatar } from "@/components/TeamAvatar";
 import { teamsApi, type TeamFilters } from "@/lib/api/teams";
 import { formatDateTime } from "@/lib/format";
 import { useApi, useSubmit } from "@/lib/hooks/useApi";
@@ -37,58 +39,68 @@ export default function TeamsPage() {
 
   return (
     <>
-      <h1>Equipos</h1>
+      <PageHeader title="Equipos" description="Equipos participantes y sus integrantes." />
 
-      <section>
-        <h2>Nuevo equipo</h2>
-        <form onSubmit={onCreate}>
-          <label>Nombre<input value={name} onChange={(e) => setName(e.target.value)} required /></label>
-          <label>Ciudad<input value={city} onChange={(e) => setCity(e.target.value)} /></label>
-          <button disabled={create.submitting}>Crear</button>
-        </form>
-        <ErrorBox error={create.error} />
-      </section>
-
-      <section>
-        <div className="filters">
-          <label>
-            Nombre
-            <input value={filters.name} onChange={(e) => setFilters({ ...filters, name: e.target.value, pageNumber: 1 })} />
-          </label>
-          <label>
-            Ciudad
-            <input value={filters.city} onChange={(e) => setFilters({ ...filters, city: e.target.value, pageNumber: 1 })} />
-          </label>
-          <SortControls
-            options={sortOptions}
-            sortBy={filters.sortBy!}
-            sortDirection={filters.sortDirection!}
-            onChange={(sortBy, sortDirection) => setFilters({ ...filters, sortBy, sortDirection, pageNumber: 1 })}
-          />
+      <section className="card">
+        <div className="card-header">
+          <h2>Nuevo equipo</h2>
+        </div>
+        <div className="card-body">
+          <form className="form-grid" onSubmit={onCreate}>
+            <label>Nombre<input value={name} onChange={(e) => setName(e.target.value)} required /></label>
+            <label>Ciudad<input placeholder="Opcional" value={city} onChange={(e) => setCity(e.target.value)} /></label>
+            <button className="btn btn-primary" disabled={create.submitting}>Crear equipo</button>
+          </form>
+          <ErrorBox error={create.error} />
         </div>
       </section>
 
-      <section>
-        <ErrorBox error={error} />
-        {loading && <p className="muted">Cargando…</p>}
+      <section className="card">
+        <div className="card-header">
+          <h2>Listado</h2>
+          <div className="filters">
+            <label>
+              Nombre
+              <input placeholder="Buscar…" value={filters.name} onChange={(e) => setFilters({ ...filters, name: e.target.value, pageNumber: 1 })} />
+            </label>
+            <label>
+              Ciudad
+              <input placeholder="Buscar…" value={filters.city} onChange={(e) => setFilters({ ...filters, city: e.target.value, pageNumber: 1 })} />
+            </label>
+            <SortControls
+              options={sortOptions}
+              sortBy={filters.sortBy!}
+              sortDirection={filters.sortDirection!}
+              onChange={(sortBy, sortDirection) => setFilters({ ...filters, sortBy, sortDirection, pageNumber: 1 })}
+            />
+          </div>
+        </div>
+        {error && <div className="card-body"><ErrorBox error={error} /></div>}
+        {loading && !data && <div className="loading">Cargando…</div>}
         {data && (
           <>
-            <table>
-              <thead>
-                <tr><th>Equipo</th><th>Ciudad</th><th>Jugadores</th><th>Creado</th></tr>
-              </thead>
-              <tbody>
-                {data.data.map((team) => (
-                  <tr key={team.id}>
-                    <td><Link href={`/teams/${team.id}`}>{team.name}</Link></td>
-                    <td>{team.city ?? "—"}</td>
-                    <td>{team.playerCount}</td>
-                    <td>{formatDateTime(team.createdAtUtc)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {data.totalRecords === 0 && <p className="muted">No hay equipos con esos filtros.</p>}
+            <div className="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Equipo</th><th>Ciudad</th><th className="num">Jugadores</th><th>Creado</th></tr>
+                </thead>
+                <tbody>
+                  {data.data.map((team) => (
+                    <tr key={team.id}>
+                      <td>
+                        <Link className="team-cell" href={`/teams/${team.id}`}>
+                          <TeamAvatar name={team.name} />{team.name}
+                        </Link>
+                      </td>
+                      <td className="muted">{team.city ?? "—"}</td>
+                      <td className="num">{team.playerCount}</td>
+                      <td className="muted">{formatDateTime(team.createdAtUtc)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {data.totalRecords === 0 && <div className="empty">No hay equipos con esos filtros.</div>}
             <Pagination
               page={data}
               onPageChange={(pageNumber) => setFilters({ ...filters, pageNumber })}
